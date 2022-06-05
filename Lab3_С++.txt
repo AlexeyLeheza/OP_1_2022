@@ -1,0 +1,124 @@
+#include <iostream>
+#include <windows.h>
+#define PI 3.1415
+using namespace std;
+class circle
+{
+private:
+	float radius = 1, x = 0, y = 0;
+public:
+	circle(float x, float y);
+	circle(float x, float y, float r);
+	circle(float r);
+	circle();
+	float circumference();
+	float Get_r();
+	float Get_x();
+	float Get_y();
+	void Print();
+	circle& operator ++();
+	circle& operator ++(int v);
+	circle& operator *(int value);
+	void static Search(circle C1, circle C2, circle C3);
+};
+circle::circle()
+{
+}
+circle::circle(float x, float y)
+{
+	this->x = x;
+	this->y = y;
+}
+circle::circle(float r)
+{
+	this->radius = r;
+}
+circle::circle(float x, float y, float r)
+{
+	this->x = x;
+	this->y = y;
+	this->radius = r;
+}
+
+
+float circle::circumference()
+{
+	return 2 * PI * radius;
+}
+
+
+float circle:: Get_r()
+{
+	return radius;
+}
+float circle:: Get_x()
+{
+	return x;
+}
+float circle:: Get_y()
+{
+	return y;
+}
+
+void circle:: Print()
+{
+	cout << "(" << this->Get_x() << ";" << this->Get_y() << ") Радіус=" << this->Get_r() << " довжина кола=" << this->circumference() << endl;
+}
+
+circle& circle:: operator ++()
+{
+	this->x++;
+	this->y++;
+	return *this;
+}
+circle& circle:: operator ++(int v)
+{
+	circle temp = *this;
+	this->x++;
+	this->y++;
+	return temp;
+}
+circle& circle::operator *(int value)
+{
+	this->radius *= value;
+	return *this;
+}
+ void circle ::Search(circle C1, circle C2, circle C3)
+{
+	if (C1.circumference() > C2.circumference() && C1.circumference() > C3.circumference())
+	{
+		circle Max = C1;
+		cout << "C1 має найбілшу довжину кола:" << C1.circumference();
+	}
+	else
+		if (C2.circumference() > C1.circumference() && C2.circumference() > C3.circumference())
+		{
+			circle Max = C2;
+			cout << "C2 має найбілшу довжину кола:" << C2.circumference();
+		}
+		else
+			if (C3.circumference() > C2.circumference() && C3.circumference() > C1.circumference())
+			{
+				circle Max = C3;
+				cout << "C3 має найбілшу довжину кола:" << C3.circumference();
+			}
+			else
+			{
+				cout << "Немає найбільшого значення" << endl;
+			}
+}
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	circle C1(10, 6), C2(5), C3(4, 5, 10);
+	cout << "Коло: C1:"; C1.Print();
+	cout << "Коло: C2:"; C2.Print();
+	cout << "Коло: C3:"; C3.Print();
+	cout << "Постфіксний інкремент C1(" << (C1++).Get_x() << ";" << C1.Get_y() << ")\nПрефіксний інкремент C2(" << C2.Get_x() << ";" << (++C2).Get_y() << ")\n";
+	C3 * 3;
+	cout << "Коло: C1:"; C1.Print();
+	cout << "Коло: C2:"; C2.Print();
+	cout << "Коло: C3:"; C3.Print();
+	circle::Search(C1, C2, C3);
+}

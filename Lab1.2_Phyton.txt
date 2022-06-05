@@ -1,0 +1,77 @@
+def time(day,mon,year):
+    time=day
+    M = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    for i in range(mon):
+        time =time+ M[i]#Час від початку відліку років у днях
+    time =time+(year*365)#Час від початку відліку років у днях
+    return time
+
+
+def CreateFile():
+    file=input("Введіть імя файлу:")
+    Infile = open(file, 'w')
+    value=int(input("Введіть кількіст співробітників:"))
+    print("Введіть: прізвище, ім'я, по батькові, дату Народження(у форматі Д М РРРР):, дату прийому на роботу(у форматі Д М РРРР):")
+    for i in range(value):
+        print("Співробітник ",i+1)
+        Name=input()
+        Surname = input()
+        FatherName = input()
+        day_bd = input()
+        mon_bd = input()
+        year_bd = input()
+        day_em = input()
+        mon_em= input()
+        year_em = input()
+        Infile.write( Name+" "+Surname+" "+ FatherName+" "+day_bd+" "+mon_bd+" "+year_bd+" "+day_em+" "+ mon_em+" "+year_em +"\n")
+    Infile.close()
+    return file
+
+def ChangeFile( file,days):
+    M = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    inFile = open(file, "r")
+    newfile = input("Введіть імя нового текстового файлу:")
+    File=open(newfile,'w')
+    for string in inFile.readlines():
+        word = string.split()
+        str=""
+        for i in range(3):
+            str=str+" "
+            str=str+word[i]
+        i += 1
+        day_bd=word[i]
+        i+=1
+        mon_bd =word[i]
+        i+=1
+        year_bd =word[i]
+        i+=1
+        time_bd = time(int(day_bd), int(mon_bd), int(year_bd))
+
+        day_em= word[i]
+        i+=1
+        mon_em = word[i]
+        i+=1
+        year_em = word[i]
+        i+=1
+        time_em = time(int(day_em), int(mon_em),int(year_em))
+        if ((days - time_bd) > 14600 and (days - time_em)> 7300): # перевірка віку і стажу людини
+            File.write(str+ "    "+day_bd+" " +mon_bd + " " + year_bd + "\t      " + day_em + " " + mon_em+" " + year_em + "\n")
+    inFile.close()
+    File.close()
+    return newfile
+
+def PrintFile( file):
+    inFile = open(file, "r")
+    print("прізвище Ім'я По батькові Дата Народження Дата прийому на роботу")
+    str = inFile.read()
+    print(str)
+    inFile.close()
+
+day=int(input("Введіть сьогоднішню дату:"))
+mon =int(input())
+year=int(input())
+days=time(day,mon,year)
+str  =	CreateFile()#Функція створює із списком працівників
+PrintFile(str)#Вивід список співробітників
+newfile=ChangeFile(str,days)#Внесення змін до файлу
+PrintFile(newfile);#Вивід редагованого списоку співробітників

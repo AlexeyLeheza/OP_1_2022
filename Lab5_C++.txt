@@ -1,0 +1,80 @@
+#include <string>
+#include <iostream>
+#include <windows.h>
+using namespace std;
+struct TNode
+{
+	char symbol;
+	TNode* left, * right;
+};
+void Add(char ch, TNode*& Tree)
+{
+	if (!Tree)//Перевірка на те чи пустий елемент
+	{
+		Tree = new TNode;
+		Tree->symbol = ch;
+		Tree->left = Tree->right = NULL;
+		return;
+	}
+	if (ch > Tree->symbol)
+		Add(ch, Tree->right);
+	else
+		Add(ch, Tree->left);
+}
+void Print(TNode* Tree, int space) {
+	if (Tree != NULL)
+	{
+		space += 4;
+		Print(Tree->right, space);
+		for (int i = 0; i <= space; i++) cout << " ";
+		cout << Tree->symbol << endl;
+		Print(Tree->left, space);
+		space -= 4;
+	}
+}
+int deep(TNode* Tree)
+{
+	if (Tree != NULL)
+	{
+		int left, right;
+		if (Tree->left != NULL) {
+			left = deep(Tree->left);
+		}
+		else
+			left = 0;
+		if (Tree->right != NULL) {
+			right = deep(Tree->right);
+		}
+		else
+			right = 0;
+		int max;
+		if (left > right)
+		{
+			max = left;
+		}
+		else
+		{
+			max = right;
+		}
+		return max + 1;
+	}
+	return 0;
+}
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	TNode* tree = NULL;
+	cout << "Введіть рядок символів:";
+	string str;
+	cin >> str;
+	for (int i = 0; i < str.length(); i++)
+	{
+		if (isalpha(str[i]) || isdigit(str[i]))
+		{
+			Add(str[i], tree);
+		}
+	}
+	Print(tree, 0);
+	cout << "Глибина дерева:" << deep(tree) << endl;
+}

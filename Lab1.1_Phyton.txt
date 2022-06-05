@@ -1,0 +1,80 @@
+#file = open(file,'w')
+def InputFile():
+    file=input("Введіть ім'я файлу:")
+    print("Введіть файл. Для завершення вводу натисніть Ctrl+S:")
+    Inputfile=open(file,'w')
+    ends="^S"
+    while(True):
+        str=input()
+        if(str.find(ends)!=-1):
+            pos=str.find(ends)
+            str=str[:pos]+"\n"
+            Inputfile.write(str)
+            break
+        else:
+            str=str+"\n"
+            Inputfile.write(str)
+    Inputfile.close()
+    return file
+
+def Changed_file(file):
+    inFile=open(file,"r")
+    newfile=input("Введіть імя нового текстового файлу:")
+    File=open(newfile,'w')
+    #while(inFile_):
+
+    for str in inFile.readlines():
+
+       # str=inFile.readline()
+        count=len(str)
+        sentence=str.split()
+        if(sentence):
+          firstword = sentence[0]
+          symbol = firstword[-1]
+        else:
+            firstword =""
+            symbol = ""
+
+        str=str[0:count-1]+symbol+"\n"
+        File.write(str)
+    inFile.close()
+    File.close()
+    return newfile
+
+def Print_file(file):
+    inFile = open(file,"r")
+    if (inFile):
+        print("Файл:")
+        str=inFile.read()
+        print(str)
+    else:
+        print("файл не був успішно відкритий")
+    inFile.close()
+
+def Append(file):
+    print("Доповніть файл. Для завершення вводу натисніть Ctrl+S:")
+    appfile = open(file,"a")
+    ends = "^S"
+    while (True):
+        str = input()
+        if (str.find(ends) != -1):
+            pos = str.find(ends)
+            str = str[:pos] + "\n"
+            appfile.write(str)
+            break
+        else:
+            str = str + "\n"
+            appfile.write(str)
+    appfile.close()
+    return file
+
+fileStart=InputFile()
+file_changed=Changed_file(fileStart)
+Print_file(fileStart)
+Print_file(file_changed)
+question=input("Якщо бажаєте дописати щось до файлу введіть \"append\",інакше буде завершена програма.\n")
+if(question=="append"):
+  file_changed=Append(file_changed)
+  Print_file(file_changed)
+else:
+    print("Кінець програми\n")

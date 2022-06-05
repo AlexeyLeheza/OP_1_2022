@@ -1,0 +1,126 @@
+#include<iostream>
+#include<iomanip>
+#include<string>
+#include<ctime>
+#include<windows.h>
+using namespace std;
+
+class Point//клас точка, який містить значення координат та векторів
+{
+public:
+	int x, y, z, xv, yv, zv;
+public:
+	Point();
+	Point(int xx, int yy, int zz, int xvec, int yvec, int zvec);
+	string PrintElement();
+};
+class MasivePoint :public Point//Створення класу масив точток, який наслідує клас точка
+{
+private:
+	Point* arr;
+	int* arrOct;
+	int length, lenOct;
+public:
+	MasivePoint(int length);
+	~MasivePoint();
+	void PrintMasive();
+	int* OctanMaisve(float time);
+	void PrintOctanMasive();
+};
+
+
+
+Point::Point()// конструктор класу точка
+{
+	x = rand() % 11 - 5; y = rand() % 11 - 5; z = rand() % 11 - 5;
+	xv = rand() % 8 - 1; yv = rand() % 8 - 1; zv = rand() % 8 - 1;
+}
+Point::Point(int xx, int yy, int zz, int xvec, int yvec, int zvec)//конструктор класу точка для власного визначення координат
+{
+	x = xx;     y = yy;     z = zz;
+	xv = xvec;	yv = yvec;	zv = zvec;
+}
+string Point::PrintElement()//метод, який виводить значення елементів конкретного обєкту
+{
+	return "x,y,z(" + to_string(x) + ";" + to_string(y) + ";" + to_string(z) + "); x,y,z(vec)(" + to_string(xv) + ";" + to_string(yv) + ";" + to_string(zv) + ")\n";
+}
+
+
+
+MasivePoint::MasivePoint(int length)//конструктор класу, у якому заповнюється сам масив
+{
+	this->length = length;
+	this->lenOct = length;
+	this->arr = new Point[length];
+	this->arrOct = new int[length];
+	for (int i = 0; i < length; i++)
+	{
+		arr[i] = Point();
+	}
+}
+MasivePoint::~MasivePoint()//деструктор для динамічних масивів
+{
+	delete[] arr;
+	if (arrOct != nullptr)
+	{
+		delete[] arrOct;
+	}
+}
+void MasivePoint::PrintMasive()// вивід масиву на екран
+{
+	cout << "масив:";
+	for (int i = 0; i < length; i++)
+	{
+		cout << "\n" << arr[i].PrintElement();//
+	}
+}
+int* MasivePoint::OctanMaisve(float time)//метод, який вибирає точки, які будуть у першому октані
+{
+	for (int i = 0; i < length; i++)
+	{
+		if ((arr[i].x + arr[i].xv * time) > 0 && (arr[i].y + arr[i].yv * time) > 0 && (arr[i].z + arr[i].zv * time) > 0)//
+		{
+			arrOct[i - (length - lenOct)] = i;
+		}
+		else
+		{
+			lenOct = lenOct - 1;
+			int* temp = new int[lenOct];
+			for (int j = 0; j < lenOct; j++)
+			{
+				temp[j] = arrOct[j];
+			}
+				delete[] arrOct;
+				arrOct = temp;
+		}
+
+	}
+	return arrOct;
+}
+void MasivePoint::PrintOctanMasive()//Вивід редагованого масиву на екран 
+{
+	cout << "Індекси елементів, які входять у перший октант:" << endl;
+	for (int i = 0; i < lenOct; i++)
+	{
+		cout << arrOct[i] << " ";
+	}
+	cout << endl;
+}
+void main()
+{
+	srand(time(NULL));
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	int length;
+	cout << "Введіть розмір масиву:";
+	cin >> length;
+	int lenOct = length;
+	float time;
+	cout << "Введіть час:";
+    cin >> time;
+	MasivePoint arr(length);
+	arr.PrintMasive();
+	int* arrOc;
+	arrOc = arr.OctanMaisve(time);
+	arr.PrintOctanMasive();
+}

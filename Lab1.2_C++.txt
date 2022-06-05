@@ -1,0 +1,115 @@
+#include <iostream>
+#include<string>
+#include<fstream>
+#include<iomanip>
+#include<windows.h>
+#include <time.h>
+using namespace std;
+int time(int day, int mon, int year)
+{
+	int M[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 },time=day;
+	for (int i = 0; i < mon; i++)
+		{
+			time += M[i];//Час від початку відліку років у днях
+		}
+		time +=year*365;//Час від початку відліку років у днях
+	return time;
+}
+
+string CreateFile()
+{
+	  int year_bd, mon_bd, day_bd;
+	  int year_em, mon_em, day_em;
+
+
+	string Name, Surname, FatherName, file;
+	int value;
+	cout << "Введіть імя файлу:";
+	cin.ignore();
+	getline(cin,file);
+	cout << "Введіть кількіст співробітників:";
+	cin >> value;
+	ofstream InFile(file,ios::binary);
+	cout << "Введіть: прізвище, ім'я, по батькові, дату Народження(у форматі Д М РРРР):, дату прийому на роботу(у форматі Д М РРРР):";
+	for (int i = 0; i < value; i++)
+	{
+		cout << "\nСпівробітник " << i+1 << ")\n";
+		cin>> Name>> Surname>> FatherName>> day_bd >> mon_bd>>  year_bd >> day_em  >> mon_em >> year_em;//Введення імені, прізвища, по батькові, рік місяць і дату народження та прийняття на роботу
+		InFile<<Name<<" " <<Surname<<" " <<FatherName<< setw(6) << day_bd <<" " << mon_bd<<" " << year_bd << setw(16) << day_em <<" " << mon_em<<" " << year_em << endl;
+	}
+	InFile.close();
+	return file;
+}
+
+string ChangeFile(string file,int days)
+{
+	int M[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	int time_bd = 0, time_em = 0, val, day_bd, mon_bd, year_bd, day_em, mon_em, year_em;
+	string newfile;
+	ifstream inFile(file, ios::binary);
+	cout<<"Введіть ім'я нового текстового файлу:";
+	cin.ignore();
+	getline(cin, newfile);
+	ofstream File(newfile, ios::binary);
+	while (!inFile.eof())
+	{
+		//считування П.І.Б
+		string str, string;
+		for (int i = 0; i < 3; i++)
+		{
+			inFile >> string;
+			str.append(" ");
+			str.append(string);
+		}
+		//вираховування віку людини
+		inFile >> day_bd;
+		inFile >> mon_bd;
+		inFile >> year_bd;
+        time_bd =time(day_bd,mon_bd,year_bd);
+		//вираховування стажу людини
+		inFile >> day_em;
+		inFile >> mon_em;
+		year_em = 2020;
+		inFile >> year_em;
+		time_em = time(day_em, mon_em, year_em);
+		if (days-time_bd>14600&&days- time_em >7300)//перевірка віку і стажу людини
+		{
+			File << str << setw(6) << day_bd << " " << mon_bd << " " << year_bd << setw(16) << day_em << " " << mon_em  << year_em << endl;
+		}
+	}
+	inFile.close();
+	File.close();
+	return newfile;
+
+}
+void PrintFile(string file)
+{
+
+	string str;
+	ifstream inFile(file, ios::binary);
+	cout << "Файл:" << file << endl;
+	cout << "Прізвище "<<"Ім'я "<<"По батькові"<<setw(19)<<"Дата Народження"<<setw(26)<<"Дата прийому на роботу"<<endl;
+	while (!inFile.eof())
+	{
+		getline(inFile, str);
+		cout << str << endl;
+	}
+	inFile.close();
+}
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	string str, newfile;
+	cout << "Введіть сьогоднішню дату" << endl;
+	int day, mon, year, days;
+	cin >> day >> mon >> year;
+	days = time(day,mon,year);
+    str  =	CreateFile();//Функція створює із списком працівників
+	PrintFile(str);//Вивід список співробітників
+	newfile =ChangeFile(str,days);//Внесення змін до файлу
+	cout <<"відсортований файл:"<< endl;
+	PrintFile(newfile);//Вивід редагованого списоку співробітників
+}
+
+

@@ -1,0 +1,139 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <windows.h>
+using namespace std;
+string InputFile()//Введення початкового текстового файлу
+{
+    string file, str;
+    cout << "Введіть ім'я файлу:";
+    getline(cin, file);
+    cout << "Введіть файл. Для завершення вводу натисніть Ctrl+S:" << endl;
+    char ends = 19;
+    ofstream InputFile(file);
+    do
+    {
+        getline(cin, str);
+        if (str.find(ends) == string::npos)//читання всього рядочка до кінця
+            InputFile << str << '\n';
+        else
+        {
+            int pos = str.find(ends);
+            str.erase(pos, str.length());
+            InputFile << str;
+            InputFile.close();
+            return file;
+        }
+    } while (true);
+}
+string Changed_file(string file)
+{
+    string newFile, str, first_word, sp;
+    char symbol, ch;
+    ifstream inFile(file);
+    cout << "Введіть ім'я нового текстового файлу:";
+    getline(cin, newFile);
+    ofstream outFile(newFile);
+    if (inFile)//Перевірка безпомилкового відкриття файлу
+    {
+        while (!inFile.eof())
+        {
+            int space = 0, i = 0;
+            str = "";
+            sp = "";
+            getline(inFile, str);
+            while (str[i] == ' ')
+            {
+                space += 1;
+                i++;
+            }
+            while (isalpha(str[i]) || isdigit(str[i]))
+            {
+                i++;
+            }
+            symbol = str[i - 1];
+            sp.insert(0, space, ' ');
+            outFile << sp << str << ' ' << symbol << endl;
+        }
+
+    }
+    else
+    {
+        cout << "файл не був успішно відкритий або файл пустий";
+    }
+    outFile.close();
+    inFile.close();
+    return newFile;
+}
+void Print_file(string file)//Функція вивиодить текстовий файл
+{
+    string s;
+    ifstream inFile(file);
+    if (inFile)
+    {
+        cout << "Файл:" << file << endl;
+        while (!inFile.eof())
+        {
+            getline(inFile, s);
+            cout << s << endl;
+        }
+    }
+    else
+    {
+        cout << "файл не був успішно відкритий або файл пустий";
+    }
+    inFile.close();
+}
+
+string Append(string file)
+{
+    string str;
+    cout << "Доповніть файл. Для завершення вводу натисніть Ctrl+S:" << endl;
+    char ends = 19;
+    ofstream InputFile;
+    InputFile.open(file, fstream::out | fstream::app);
+    while (true)
+    {
+        cout << "Якщо бажаєте дописати щось до файлу введіть \"append\",інакше буде завершена програма.";
+        getline(cin, str);
+
+        if (str == "append")
+        {
+            while (true)
+            {
+                getline(cin, str);
+                if (str.find(ends) == string::npos)//читання всього рядочка до кінця
+                    InputFile << str << '\n';
+                else
+                {
+                    int pos = str.find(ends);
+                    str.erase(pos, str.length());
+                    InputFile << str;
+                    InputFile.close();
+                    Print_file(file);
+                    return file;
+                }
+            }
+
+        }
+        else
+        {
+            cout << "Кінець програми" << endl;
+            break;
+        }
+
+        Print_file(file);
+    }
+}
+
+int main()
+{
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    string fileStart = InputFile();
+    string file_changed = Changed_file(fileStart);
+    Print_file(fileStart);
+    Print_file(file_changed);
+    file_changed=Append(file_changed);
+    Print_file(file_changed);
+}

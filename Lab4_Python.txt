@@ -1,0 +1,96 @@
+import random
+class TFunction:
+    def __init__(self):
+        pass
+    def Print(self):#віртуальний метод, який буде уточнений у класах нащадках
+        pass
+    def calculations(self):#віртуальний метод, який буде уточнений у класах нащадках
+        pass
+    def plus(self,value):#метод додає введене значення до всіх коефіцієнтів
+        self.a += value
+        self.b += value
+        self.c += value
+
+    def minus(self,value):#метод віднімає введене значення до всіх коефіцієнтів
+        self.a -= value
+        self.b -= value
+        self.c -= value
+    def Set_x(self,val):#Метод змінює значення Х на введене
+        self.x=val
+
+
+class linear_function(TFunction):
+    def __init__(self):
+        self.x=random.randint(-4,6)
+        self.b = random.randint(-3,8)
+        self.c = random.randint(-2,6)
+        self.y = self.b * self.x + self.c
+        self.a=0
+    def Print(self):#метод виводить лінійне рівняння
+        print("Функція y=", self.b, "x+", self.c, "=0  ; a = ", self.a, ", b = ", self.b, ", c = ", self.c, "  x = ",self.x, ", y = ", self.y)
+    def calculations(self):#метод обчислює значення У
+        self.y =self.b * self.x + self.c
+        return self.y
+
+
+
+class quadratic_function(TFunction):
+    def __init__(self):
+        self.x = random.randint(-4, 6)
+        self.b = random.randint(-3, 8)
+        self.c = random.randint(-2, 6)
+        self.a = random.randint(1,5)
+        self.y =  self.a * self.x * self.x + self.b * self.x + self.c
+    def Print(self):#метод виводить квадратичне рівняння
+        print("Функція y=", self.a, "x^2+", self.b, "x+", self.c, "=0  ; a = ", self.a, ", b = ", self.b, ", c = ",self.c, "  x = ", self.x, ", y = ", self.y)
+    def calculations(self):#метод обчислює значення У
+        self.y = self.a * self.x * self.x + self.b * self.x + self.c
+        return self.y
+
+n=int(input("Введіть кількість лінійних функцій:"))
+m=int(input("Введіть кількість квадратичних функцій:"))
+line = [linear_function() for i in range(n)]
+quad = [quadratic_function() for i in range(m)]
+print("Лінійні функції:")
+#Вивід всього маисву на екран
+for i in range(n):
+    line[i].Print()
+print("\nКвадратичні функції:")
+for i in range (m):
+    quad[i].Print()
+#збільшення та зменшення коефіцієнтів
+for i in range(n):
+    line[i].plus(3)
+for i in range (m):
+    quad[i].minus(2)
+#Вивід всього маисву на екран
+print("\n")
+print("Лінійні функції:")
+for i in range(n):
+    line[i].Print()
+print("\nКвадратичні функції:")
+for i in range (m):
+    quad[i].Print()
+#Обчислення найбільшого значення за введеними значенням Х
+x=int(input("Введіть значення Х:"))
+max_l = -100
+max_q = -100
+for i in range (n):
+	line[i].Set_x(x)
+for i in range (m):
+	quad[i].Set_x(x);
+
+for i in range (n):
+	if (max_l < line[i].calculations()):
+		max_l = line[i].calculations()
+		l = i
+for i in range(m):
+	if (max_q < quad[i].calculations()):
+		max_q = quad[i].calculations()
+		q = i
+if (max_q < max_l):
+	print("Найбільше значення функції:",max_l, " із рівнянням")
+	line[l].Print()
+else:
+	print(max_q," із рівнянням")
+	quad[q].Print()

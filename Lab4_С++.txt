@@ -1,0 +1,181 @@
+#include <iostream>
+#include <windows.h>
+#include <ctime>
+#include <iomanip>
+using namespace std;
+
+class TFunction
+{
+public:
+	int a, b, c, x, id;
+	float y;
+public:
+	static int k;
+	void plus(double value)//метод додає введене значення до всіх коефіцієнтів
+	{
+		a += value;
+		b += value;
+		c += value;
+		y = calculations();
+	}
+	void minus(double value)//метод віднімає введене значення до всіх коефіцієнтів
+	{
+		a -= value;
+		b -= value;
+		c -= value;
+		y = calculations();
+	}
+
+	virtual void Print()//віртуальний метод, який буде уточнений у класах нащадках
+	{
+	}
+	virtual double calculations()//віртуальний метод, який буде уточнений у класах нащадках
+	{
+		return y;
+	}
+	void Set_x(int x)//Метод змінює значення Х на введене
+	{
+		this->x = x;
+	}
+};
+
+
+int TFunction::k = 0;
+class linear_function : public TFunction
+{
+public:
+	linear_function()//
+	{
+		x = rand() % 10 - 4 + k;
+		b = rand() % 8 - 3 + 2 * k;
+		c = rand() % 6 - 2 + 2 * k;
+		y = b * x + c;
+		a = 0;
+		k++;
+
+	}
+	void Print()override//метод виводить лінійне рівняння 
+	{
+		cout << "Функція y=" << setw(2) << this->b << "x+" << setw(2) << this->c << "=0  ;";
+		cout << " a = " << setw(2) << this->a << ", b = " << setw(2) << this->b << ", c = " << setw(2) << this->c << "  x = " << setw(2) << this->x << ", y = " << setw(2) << this->y << endl;
+	}
+	double calculations() override//метод обчислює значення У
+	{
+		return y = b * x + c;
+	}
+};
+
+
+class quadratic_function : public TFunction
+{
+public:
+	quadratic_function()
+	{
+		x = rand() % 10 - 5 + k;
+		b = rand() % 5 - 3 + 2 * k;
+		c = rand() % 3 - 5 + 2 * k;
+		a = rand() % 3 - 2 + k;
+		y = a * x * x + b * x + c;
+		k++;
+	}
+	void Print()override//метод виводить квадратичне рівняння 
+	{
+		cout << "Функція y=" << setw(2) << this->a << "x^2+" << setw(2) << this->b << "x+" << setw(2) << this->c << "=0  ;";
+		cout << " a = " << setw(2) << this->a << ", b = " << setw(2) << this->b << ", c = " << setw(2) << this->c << "  x = " << setw(2) << this->x << ", y = " << setw(2) << this->y << endl;
+	}
+	double calculations()override//метод обчислює значення У
+	{
+		return y = a * x * x + b * x + c;
+	}
+};
+
+int main()
+{
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+	srand(time(NULL));
+	int n, m, x;
+	cout << "Введіть кількість лінійних функцій:" << endl;
+	cin >> n;
+	cout << "Введіть кількість квадратичних функцій:" << endl;
+	cin >> m;
+	linear_function* line = new linear_function[n];
+	quadratic_function* quad = new quadratic_function[m];
+
+	//Вивід всього маисву на екран
+	cout << "Лінійні функції:" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		line[i].Print();
+	}cout << "\nКвадратичні функції:" << endl;
+	for (int i = 0; i < m; i++)
+	{
+		quad[i].Print();
+	}
+	cout << endl << endl;
+	//збільшення та зменшення коефіцієнтів 
+
+	for (int i = 0; i < n; i++)
+	{
+		line[i].plus(3);
+	}
+	for (int i = 0; i < m; i++)
+	{
+		quad[i].minus(2);
+	}
+
+	//Вивід всьогомаисву на екран
+	cout << "Лінійні функції:" << endl;
+	for (int i = 0; i < n; i++)
+	{
+		line[i].Print();
+	}cout << "\nКвадратичні функції:" << endl;
+	for (int i = 0; i < m; i++)
+	{
+		quad[i].Print();
+	}cout << endl;
+
+	// Обчислення найбільшого значення за введеними значенням Х
+	cout << "Введіть значення Х:";
+	cin >> x;
+	cout << "Найбільше значення функції:";
+
+	int max_l = -100, max_q = -100, l, q;
+	for (int i = 0; i < n; i++)
+	{
+		line[i].Set_x(x);
+	}
+	for (int i = 0; i < m; i++)
+	{
+		quad[i].Set_x(x);
+	}
+
+	for (int i = 0; i < n; i++)
+	{
+		if (max_l < line[i].calculations())
+		{
+			max_l = line[i].calculations();
+			l = i;
+		}
+	}
+	for (int i = 0; i < m; i++)
+	{
+		if (max_q < quad[i].calculations())
+		{
+			max_q = quad[i].calculations();
+			q = i;
+		}
+	}
+	if (max_q < max_l)
+	{
+		cout << max_l << " із рівнянням";
+		line[l].Print();
+	}
+	else
+	{
+		cout << max_q << " із рівнянням";
+		quad[q].Print();
+	}
+	delete[] line;
+	delete[] quad;
+}
